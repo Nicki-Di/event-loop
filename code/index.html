@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+    <meta charset = "utf-8">
+    <title>Event Loop</title>
+    <style>
+        @keyframes css-anim {
+            from {
+                top: 50px;
+            }
+
+            to {
+                top: 550px;
+            }
+        }
+
+        #css-animation {
+            animation: linear 1s css-anim infinite alternate;
+        }
+    </style>
+    <link rel = "stylesheet" href = "styles.css">
+</head>
+<body>
+<img src = "logo.svg" id = "logo" alt = "digiexpress">
+<div id = "css-animation"></div>
+<div id = "js-animation2" class = "js-animation"></div>
+<div id = "js-animation1" class = "js-animation"></div>
+<script type = "text/javascript">
+    const repaintInterval = 10;
+    const duration = 1000;
+    const pathHeight = 500;
+    const topOffset = 50;
+
+
+    function makeAnimation(selector) {
+        let elemTop = 50;
+        let direction = 1;
+        let start, previousTimeStamp;
+
+
+        return function animate(timestamp) {
+            if (start === undefined) {
+                start = timestamp;
+            }
+            if (elemTop >= pathHeight + topOffset && direction === 1) {
+                direction = -1;
+            }
+            if (elemTop <= topOffset && direction === -1) {
+                direction = 1;
+            }
+
+            let passedTime = timestamp - start
+            const dir = Math.floor(passedTime / 1000) % 2 === 0 ? 0 : 1
+            if(dir)
+                elemTop = 550 - ((pathHeight / duration) * (passedTime % duration))
+            else
+                elemTop = (pathHeight / duration) * (passedTime % duration) + 50
+
+            document.querySelector(selector).style.top = `${elemTop}px`;
+            window.requestAnimationFrame(animate)
+        }
+    }
+
+    const animation1 = makeAnimation("#js-animation1");
+    const animation2 = makeAnimation("#js-animation2");
+
+    animation1()
+    animation2()
+
+    function randomGenerator() {
+        return (Math.random() * 2 - 1) * (Math.random() * 2 - 1) / 2 + 0.5;
+    }
+
+    function highCostFunction() {
+        let randomArray = []
+        for (let i = 0; i < 100000 * randomGenerator(); i++) {
+            randomArray = [...randomArray, i]
+        }
+    }
+</script>
+
+</body>
+</html>

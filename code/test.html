@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+    <meta charset = "UTF-8">
+    <title>Title</title>
+  <link rel = "stylesheet" href = "styles.css">
+
+</head>
+<body>
+<div id="js-animation1" class = "js-animation"></div>
+
+<script type = "text/javascript">
+  const element = document.getElementById('js-animation1');
+  let start, previousTimeStamp;
+  let done = false
+
+  function step(timestamp) {
+    if (start === undefined) {
+      start = timestamp;
+    }
+    const elapsed = timestamp - start;
+
+    if (previousTimeStamp !== timestamp) {
+      // Math.min() is used here to make sure the element stops at exactly 200px
+      const count = Math.min(0.5 * elapsed, 500);
+      element.style.transform = `translateY(${count}px)`;
+      if (count === 500) done = true;
+    }
+
+    if (elapsed < 1000) { // Stop the animation after 2 seconds
+      previousTimeStamp = timestamp;
+      if (!done) {
+        window.requestAnimationFrame(step);
+      }
+    }
+  }
+
+  window.requestAnimationFrame(step);
+
+</script>
+
+</body>
+</html>
